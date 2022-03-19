@@ -20,14 +20,24 @@
         public function __construct($db){
             $this->conn=$db;
         }
+        
+        private function isExist(){
+            $query ='Select count(1) FROM ' . $this->table . 'WHERE user_id:user_id And ';
+
+            // prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // clean data
+            $this->l_match_result= htmlspecialchars(strip_tags($this->l_match_result));
+        }
 
         // create prediction function
         public function create(){
-            $query = "INSERT INTO " . $this->table .
-                ' SET user_id         = :user_id,'.
-                    ' league_id       = :league_id,'.
-                    ' prediction      = :prediction,'.
-                    ' p_exact_score   = :p_exact_score';
+                $query ='INSERT INTO ' . $this->table .
+                ' SET user_id     = :user_id,'.
+                ' league_id       = :league_id,'.
+                ' prediction      = :prediction,'.
+                ' p_exact_score   = :p_exact_score';
 
             // prepare statement
             $stmt = $this->conn->prepare($query);
@@ -80,7 +90,7 @@
             }
             printf("Error %s. \n", $stmt->error);
             return false;
-        }         
+        }
       
     }
 ?>
