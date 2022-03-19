@@ -22,8 +22,8 @@ class Database{
         $this->conn=null;
 
         try{
-           //$this->conn = new PDO('mysql:host='.$this->db_host.'; port='.$this->db_port.' ;dbname='.$this->db_name, $this->username,$this->password);
-            $this->conn = new PDO('mysql:host='.$this->rdb_host.' ;dbname='.$this->rdb_name, $this->rusername,$this->rpassword);
+           $this->conn = new PDO('mysql:host='.$this->db_host.'; port='.$this->db_port.' ;dbname='.$this->db_name, $this->username,$this->password);
+            //$this->conn = new PDO('mysql:host='.$this->rdb_host.' ;dbname='.$this->rdb_name, $this->rusername,$this->rpassword);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         } catch(PDOException $e){

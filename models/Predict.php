@@ -22,44 +22,64 @@
         }
         
         private function isExist(){
-            $query ='Select count(1) FROM ' . $this->table . 'WHERE user_id:user_id And ';
+            $query ='SELECT count(1) AS num FROM ' . $this->table . 
+                    ' WHERE user_id = :user_id And league_id = :league_id';
 
             // prepare statement
             $stmt = $this->conn->prepare($query);
 
             // clean data
-            $this->l_match_result= htmlspecialchars(strip_tags($this->l_match_result));
+            $this->user_id   = htmlspecialchars(strip_tags($this->user_id));
+            $this->league_id = htmlspecialchars(strip_tags($this->league_id));
+
+            //bind parameter 
+            $stmt->bindParam(':user_id'  ,$this->user_id); 
+            $stmt->bindParam(':league_id',$this->league_id);  
+            
+            // execute stmt
+            if ( $stmt->execute() ){
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+               // echo("row = ".$row);
+                if ($row['num'] < 1 ) {
+                    return true;
+                }
+            }
+            printf("Error %s. \n", $stmt->error);
+            return false;
         }
 
         // create prediction function
         public function create(){
-                $query ='INSERT INTO ' . $this->table .
-                ' SET user_id     = :user_id,'.
-                ' league_id       = :league_id,'.
-                ' prediction      = :prediction,'.
-                ' p_exact_score   = :p_exact_score';
+            if ($this->isExist()) {
+                    $query ='INSERT INTO ' . $this->table .
+                    ' SET user_id   = :user_id,'.
+                    ' league_id     = :league_id,'.
+                    ' prediction    = :prediction,'.
+                    ' p_exact_score = :p_exact_score';
 
-            // prepare statement
-            $stmt = $this->conn->prepare($query);
+                // prepare statement
+                $stmt = $this->conn->prepare($query);
 
-            // clean data
-            $this->user_id         = htmlspecialchars(strip_tags($this->user_id));
-            $this->league_id       = htmlspecialchars(strip_tags($this->league_id));
-            $this->prediction      = htmlspecialchars(strip_tags($this->prediction));
-            $this->p_exact_score   = htmlspecialchars(strip_tags($this->p_exact_score));                     
+                // clean data
+                $this->user_id       = htmlspecialchars(strip_tags($this->user_id));
+                $this->league_id     = htmlspecialchars(strip_tags($this->league_id));
+                $this->prediction    = htmlspecialchars(strip_tags($this->prediction));
+                $this->p_exact_score = htmlspecialchars(strip_tags($this->p_exact_score));                     
 
-            //bind parameter
-            $stmt->bindParam(':user_id'       ,$this->user_id); 
-            $stmt->bindParam(':league_id'     ,$this->league_id);
-            $stmt->bindParam(':prediction'    ,$this->prediction);
-            $stmt->bindParam(':p_exact_score' ,$this->p_exact_score);                    
+                //bind parameter
+                $stmt->bindParam(':user_id'      ,$this->user_id); 
+                $stmt->bindParam(':league_id'    ,$this->league_id);
+                $stmt->bindParam(':prediction'   ,$this->prediction);
+                $stmt->bindParam(':p_exact_score',$this->p_exact_score);                    
 
-            // execute stmt
-            if ( $stmt->execute() ){
-                return true;
+                // execute stmt
+                if ( $stmt->execute() ){
+                    return true;
+                }
+                printf("Error %s. \n", $stmt->error);
+                return false;
             }
-            printf("Error %s. \n", $stmt->error);
-            return false;
+            printf("Error %s Already predict in league %s. \n", $this->user_id,$this->league_id);
         }
         
         //Update

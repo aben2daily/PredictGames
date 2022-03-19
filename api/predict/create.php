@@ -22,10 +22,7 @@
     $predict->league_id     =$data->league_id;
     $predict->user_id       =$data->user_id;
     $predict->prediction    =$data->prediction;
-    $predict->p_exact_score  =$data->p_exact_score;
-  /*  $predict->l_exact_score  =$data->l_exact_score;
-    $predict->l_match_result =$data->l_match_result;
-    $predict->l_win_team     =$data->l_win_team; */
+    $predict->p_exact_score =$data->p_exact_score;
 
     //create member
     if($predict->create()){
